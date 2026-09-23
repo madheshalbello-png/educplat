@@ -1,1 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Baudhika — School Digital Campus</title>
+<style>
+:root{
+  --paper:#FAF8F3; --ink:#1B2A4A; --ink-soft:#3E4C6E; --gold:#B8862F; --gold-soft:#E8D6AE;
+  --line:#D8D2C4; --green:#2F6E4E; --red:#B33B2E; --muted:#6B6656; --card:#FFFFFF;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--paper:#14151A;--ink:#EDE9DD;--ink-soft:#C9C4B4;--card:#1D1F26;--line:#33353F;--muted:#9A9587;}
+}
+:root[data-theme="dark"]{--paper:#14151A;--ink:#EDE9DD;--ink-soft:#C9C4B4;--card:#1D1F26;--line:#33353F;--muted:#9A9587;}
+html{scroll-padding-top:env(safe-area-inset-top,0px); height:100%;}
+*{box-sizing:border-box;}
+body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:-apple-system,Segoe UI,Roboto,sans-serif;}
+h1,h2,h3{font-family:"Iowan Old Style","Palatino Linotype",Georgia,serif; margin:0 0 6px;}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;padding-top:calc(14px + env(safe-area-inset-top,0px));border-bottom:1px solid var(--line);}
+.brand{display:flex;align-items:baseline;gap:8px;}
+.brand b{font-family:"Iowan Old Style",Georgia,serif;font-size:1.3rem;letter-spacing:.02em;}
+.brand span{color:var(--muted);font-size:.8rem;}
+nav.roles{display:flex;gap:4px;flex-wrap:wrap;}
+nav.roles button{border:1px solid var(--line);background:transparent;color:var(--ink-soft);padding:7px 12px;border-radius:3px;font-size:.85rem;cursor:pointer;}
+nav.roles button.active{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+main{max-width:1000px;margin:0 auto;padding:22px 20px 60px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:14px 0;}
+.card{background:var(--card);border:1px solid var(--line);border-radius:2px;padding:16px;}
+.card h3{font-size:1rem;border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:10px;}
+.row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px dashed var(--line);font-size:.92rem;}
+.row:last-child{border-bottom:none;}
+.pill{font-size:.72rem;padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--muted);}
+.pill.live{background:var(--red);color:#fff;border-color:var(--red);}
+.pill.live::before{content:"● ";}
+.pill.ok{color:var(--green);border-color:var(--green);}
+.pill.warn{color:var(--gold);border-color:var(--gold);}
+.bar{height:8px;background:var(--line);border-radius:4px;overflow:hidden;flex:1;margin-left:10px;}
+.bar>i{display:block;height:100%;background:var(--gold);}
+table{width:100%;border-collapse:collapse;font-size:.9rem;}
+table th,table td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line);}
+button.btn{background:var(--ink);color:var(--paper);border:none;padding:8px 14px;border-radius:3px;cursor:pointer;font-size:.85rem;}
+button.btn.secondary{background:transparent;color:var(--ink);border:1px solid var(--line);}
+button.btn.small{padding:4px 9px;font-size:.78rem;}
+input[type=text],input[type=number],input[type=password]{padding:6px 8px;border:1px solid var(--line);border-radius:3px;background:var(--paper);color:var(--ink);width:100%;}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px;}
+.modal{background:var(--card);border:1px solid var(--line);max-width:520px;width:100%;padding:20px;border-radius:3px;max-height:90vh;overflow:auto;}
+.notice{font-size:.78rem;color:var(--muted);margin-top:16px;border-top:1px solid var(--line);padding-top:10px;}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:9px 18px;border-radius:20px;font-size:.85rem;z-index:60;}
+a.link{color:var(--gold);cursor:pointer;text-decoration:underline;}
+.focusbox{background:var(--ink);color:var(--paper);padding:14px;border-radius:3px;text-align:center;}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;}
+textarea{width:100%;padding:8px;border:1px solid var(--line);border-radius:3px;background:var(--paper);color:var(--ink);min-height:60px;}
+main.site{max-width:1000px;margin:0 auto;padding:0 20px 60px;}
+.hero{padding:60px 0 40px;border-bottom:1px solid var(--line);}
+.hero h1{font-size:2.3rem;max-width:600px;line-height:1.15;}
+.hero p.lede{max-width:520px;color:var(--ink-soft);font-size:1.05rem;}
+.hero-actions{margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;}
+.section{padding:40px 0;border-bottom:1px solid var(--line);}
+.section h2{font-size:1.4rem;margin-bottom:18px;}
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;}
+.feat{border-left:2px solid var(--gold);padding-left:14px;}
+.feat h4{margin:0 0 4px;font-family:"Iowan Old Style",Georgia,serif;font-size:1.02rem;}
+.feat p{margin:0;color:var(--muted);font-size:.9rem;}
+.course-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;}
+.course-tile{border:1px solid var(--line);padding:14px;border-radius:3px;cursor:pointer;background:var(--card);}
+.course-tile:hover{border-color:var(--gold);}
+.course-tile b{font-family:"Iowan Old Style",Georgia,serif;font-size:1.1rem;}
+.course-tile small{color:var(--muted);}
+footer.site{text-align:center;padding:24px;color:var(--muted);font-size:.8rem;border-top:1px solid var(--line);}
+.mainnav a{color:var(--ink-soft);text-decoration:none;font-size:.88rem;padding:7px 10px;cursor:pointer;}
+.mainnav a.active{color:var(--ink);font-weight:600;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand" onclick="goPage('home')" style="cursor:pointer"><b>Baudhika</b><span>School Digital Campus</span></div>
+  <nav class="roles" id="roleNav"></nav>
+</header>
+<main id="app"></main>
+<footer class="site" id="siteFooter" style="display:none">Baudhika — digital infrastructure for schools. This is a working prototype; live video, payments and multi-school data are simulated.</footer>
+<div id="modalRoot"></div>
 
+<script>
+const ROLES = ["Student","Parent","Teacher","School Admin"];
+let STATE;
+const CLASSES = ["Class 5","Class 6","Class 7","Class 8","Class 9","Class 10","Class 11","Class 12"];
+const DEFAULT_STATE = {
+  page: "home",
+  role: "Student",
+  student: {name:"Sunita Thapa", cls:"Class 10", streak:12,
+    timetable:[["9:00","Mathematics","Mr. Rai"],["10:00","Science","Anjali Miss"],["11:00","English","Mrs. Gurung"]],
+    liveNow:"Mathematics",
+    progress:{Mathematics:82,Science:76,English:91,"Social Studies":88},
+    attendance:{Mathematics:92,Science:86,English:97},
+    homework:[{id:1,title:"Algebra Worksheet Ch.4",due:"Today",status:"Pending"},{id:2,title:"Science Lab Report",due:"Tomorrow",status:"Pending"},{id:3,title:"Essay: My Village",due:"Fri",status:"Submitted"}],
+    exams:[{title:"Science Unit Test",date:"Fri"}],
+    notifications:["Mathematics starts in 10 minutes.","New recorded lecture uploaded: Light — Reflection."]
+  },
+  parent:{child:"Sunita Thapa", pin:"1234", focusEnabled:true, hours:"3:00 PM – 7:00 PM",
+    alerts:["Sunita attended Mathematics today.","Assignment due tomorrow: Science Lab Report.","Sunita scored 82% in Science Unit Test."]
+  },
+  teacher:{name:"Anjali Miss", classes:[["10-A","Science","9:00"],["10-B","Science","11:00"]],
+    grading:[{id:1,student:"Sunita Thapa",work:"Ch.4 Worksheet",cls:"10-A",grade:null},{id:2,student:"Bikash Lama",work:"Ch.4 Worksheet",cls:"10-A",grade:null},{id:3,student:"Priya Karki",work:"Lab Report",cls:"10-B",grade:null}],
+    attendanceToday:{"Sunita Thapa":"Present","Bikash Lama":"Present","Priya Karki":"Absent"}
+  },
+  school:{name:"Mount Valley School", students:612, teachers:34, todayAttendance:89,
+    announcements:["Half-day on Friday for staff training."], subscription:"Active — School Plan"
+  },
+  liveSession:null
+};
+
+function loadState(){
+  try{
+    const raw = localStorage.getItem('baudhika_demo');
+    STATE = raw ? JSON.parse(raw) : structuredClone(DEFAULT_STATE);
+  }catch(e){ STATE = structuredClone(DEFAULT_STATE); }
+}
+function saveState(){
+  try{ localStorage.setItem('baudhika_demo', JSON.stringify(STATE)); }catch(e){}
+}
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  document.body.appendChild(t); setTimeout(()=>t.remove(),2200);
+}
+function closeModal(){ document.getElementById('modalRoot').innerHTML=''; }
+function openModal(html){ document.getElementById('modalRoot').innerHTML =
+  `<div class="modal-bg" onclick="if(event.target===this)closeModal()"><div class="modal">${html}</div></div>`; }
+
+function goPage(p){ STATE.page=p; saveState(); render(); window.scrollTo(0,0); }
+function setRole(r){ STATE.role=r; STATE.page='portal'; saveState(); render(); }
+function resetDemo(){ const p=STATE.page; STATE = structuredClone(DEFAULT_STATE); STATE.page=p; saveState(); render(); toast('Demo data reset.'); }
+function exitPortal(){ STATE.page='home'; saveState(); render(); }
+
+function renderNav(){
+  const nav = document.getElementById('roleNav');
+  if(STATE.page==='portal'){
+    nav.innerHTML = ROLES.map(r=>`<button class="${STATE.role===r?'active':''}" onclick="setRole('${r}')">${r}</button>`).join('')
+      + `<button onclick="exitPortal()">Exit to site</button>`
+      + `<button onclick="resetDemo()" style="opacity:.6">Reset</button>`;
+  } else {
+    const items = [['home','Home'],['courses','Courses'],['schools','For Schools'],['portal','Log in']];
+    nav.innerHTML = `<span class="mainnav">${items.map(([k,label])=>
+      `<a class="${STATE.page===k?'active':''}" onclick="${k==='portal'?"setRole('Student')":`goPage('${k}')`}">${label}</a>`).join('')}</span>`;
+  }
+}
+
+function render(){
+  renderNav();
+  const app = document.getElementById('app');
+  const footer = document.getElementById('siteFooter');
+  if(STATE.page==='portal'){
+    app.className = ''; footer.style.display='none';
+    if(STATE.role==="Student") app.innerHTML = studentView();
+    if(STATE.role==="Parent") app.innerHTML = parentView();
+    if(STATE.role==="Teacher") app.innerHTML = teacherView();
+    if(STATE.role==="School Admin") app.innerHTML = schoolView();
+    return;
+  }
+  app.className = 'site'; footer.style.display='block';
+  if(STATE.page==='home') app.innerHTML = homeView();
+  if(STATE.page==='courses') app.innerHTML = coursesView();
+  if(STATE.page==='schools') app.innerHTML = schoolsPitchView();
+}
+
+/* ---------- MARKETING SITE ---------- */
+function homeView(){
+  return `
+  <div class="hero">
+    <h1>Digital infrastructure for schools, not just another course website.</h1>
+    <p class="lede">Baudhika brings live classes, recorded lessons, attendance, homework, exams and honest parent monitoring into one platform — built for Class 5 to 12 in Nepal.</p>
+    <div class="hero-actions">
+      <button class="btn" onclick="goPage('schools')">Partner your school</button>
+      <button class="btn secondary" onclick="goPage('courses')">Browse courses</button>
+    </div>
+  </div>
+  <div class="section">
+    <h2>What's inside</h2>
+    <div class="feat-grid">
+      <div class="feat"><h4>Live classes that save themselves</h4><p>Every live session automatically becomes an organized recorded lesson — no extra work for teachers.</p></div>
+      <div class="feat"><h4>Attendance that tracks itself</h4><p>Presence is checked through the class, not just at roll call, so attendance reflects real participation.</p></div>
+      <div class="feat"><h4>Parent monitoring beyond marks</h4><p>Parents see attendance, homework status and watch time — not just an exam result at the end of term.</p></div>
+      <div class="feat"><h4>Focus Mode</h4><p>Restricts in-app distraction during scheduled classes, with an honest line drawn around what a browser can and can't enforce.</p></div>
+      <div class="feat"><h4>One login per school</h4><p>Students, teachers, parents and admins each get a dashboard built for their role, under the school's own name.</p></div>
+      <div class="feat"><h4>Built for Nepal</h4><p>Class 5–12 curriculum structure, low-bandwidth video, and notification fallback to SMS.</p></div>
+    </div>
+  </div>
+  <div class="section" style="border-bottom:none">
+    <h2>Try the dashboards</h2>
+    <p style="color:var(--muted)">This is a working prototype — log in as any role to explore a live class, homework, grading and school-admin tools with sample data.</p>
+    <button class="btn" onclick="setRole('Student')">Log in to explore</button>
+  </div>`;
+}
+function coursesView(){
+  return `
+  <div style="padding-top:40px">
+    <h1>Courses, Class 5–12</h1>
+    <p class="lede">Individual students can join without a school. Pick a class to see subjects, chapters and live/recorded lessons.</p>
+  </div>
+  <div class="section" style="border-bottom:none">
+    <div class="course-grid">
+      ${CLASSES.map(c=>`<div class="course-tile" onclick="toast('${c}: Mathematics, Science, English, Social Studies and more — sample catalog in this prototype.')"><b>${c}</b><br><small>All core subjects</small></div>`).join('')}
+    </div>
+  </div>`;
+}
+function schoolsPitchView(){
+  return `
+  <div class="hero" style="padding-bottom:20px">
+    <h1>Your school already has students, teachers and a timetable.</h1>
+    <p class="lede">Baudhika doesn't ask you to change how you teach — it gives your existing school a digital campus: live classes that record themselves, attendance that tracks itself, homework that doesn't get lost in WhatsApp, and parents who finally see what's happening.</p>
+  </div>
+  <div class="section">
+    <h2>What your school gets</h2>
+    <div class="feat-grid">
+      <div class="feat"><h4>Full school workspace</h4><p>Students, teachers, sections, timetable, exams, attendance and announcements — isolated to your school only.</p></div>
+      <div class="feat"><h4>No technical expert needed</h4><p>Office staff can run it. Bulk-import students and teachers from a spreadsheet in minutes.</p></div>
+      <div class="feat"><h4>Your school's own name</h4><p>Optional white-label branding: "[Your School] Digital Campus — Powered by Baudhika."</p></div>
+    </div>
+  </div>
+  <div class="section" style="border-bottom:none">
+    <h2>Ready to pilot?</h2>
+    <p style="color:var(--muted)">Log in as School Admin to see the workspace, or as Teacher/Student/Parent to see what your staff and families would use day to day.</p>
+    <button class="btn" onclick="setRole('School Admin')">See the School Admin workspace</button>
+  </div>`;
+}
+
+/* ---------- STUDENT ---------- */
+function studentView(){
+  const s = STATE.student;
+  return `
+  <h1>Welcome back, ${s.name.split(' ')[0]}</h1>
+  <div class="grid">
+    <div class="card"><h3>Today's Schedule</h3>
+      ${s.timetable.map(([t,sub,teacher])=>`<div class="row"><span>${t} — ${sub} <small style="color:var(--muted)">(${teacher})</small></span>
+        ${sub===s.liveNow?'<button class="btn small" onclick="joinLive(\''+sub+'\')">Join live class</button>':'<span class="pill">Scheduled</span>'}</div>`).join('')}
+    </div>
+    <div class="card"><h3>Study streak</h3><p style="font-size:2rem;margin:0;">${s.streak} days</p><small style="color:var(--muted)">Keep attending live classes to grow it.</small></div>
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Homework</h3>
+      ${s.homework.map(h=>`<div class="row"><span>${h.title} <small style="color:var(--muted)">— due ${h.due}</small></span>
+        ${h.status==='Submitted'?'<span class="pill ok">Submitted</span>':`<button class="btn small" onclick="submitHW(${h.id})">Mark submitted</button>`}</div>`).join('')}
+    </div>
+    <div class="card"><h3>Upcoming exams</h3>
+      ${s.exams.map(e=>`<div class="row"><span>${e.title}</span><span class="pill warn">${e.date}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card"><h3>Course progress</h3>
+    ${Object.entries(s.progress).map(([sub,p])=>`<div class="row"><span style="min-width:140px">${sub}</span><div class="bar"><i style="width:${p}%"></i></div><span style="margin-left:8px">${p}%</span></div>`).join('')}
+  </div>
+  <div class="grid">
+    <div class="card"><h3>Attendance</h3>
+      ${Object.entries(s.attendance).map(([sub,p])=>`<div class="row"><span>${sub}</span><span>${p}%</span></div>`).join('')}
+    </div>
+    <div class="card"><h3>Notifications</h3>
+      ${s.notifications.map(n=>`<div class="row">${n}</div>`).join('') || '<p style="color:var(--muted)">No new notifications.</p>'}
+    </div>
+  </div>`;
+}
+function submitHW(id){
+  const h = STATE.student.homework.find(x=>x.id===id); h.status='Submitted';
+  saveState(); render(); toast('Homework submitted.');
+}
+function joinLive(subject){
+  STATE.liveSession = {subject, joinedAt: Date.now(), pings:0, focusUntil: Date.now()+15000};
+  saveState();
+  openModal(liveModalHTML());
+  startPresencePing();
+}
+function liveModalHTML(){
+  const l = STATE.liveSession;
+  return `
+  <h3>${l.subject} — Live Class</h3>
+  <div class="focusbox">
+    <b>Focus Mode is active</b><br>
+    <small>In-app navigation is restricted while class is running. This demo auto-ends after a few presence checks.</small>
+  </div>
+  <div class="card" style="margin-top:12px;background:var(--paper)">
+    <p style="color:var(--muted);font-size:.85rem">Simulated video / whiteboard area</p>
+    <p id="pingCount">Presence checks passed: 0</p>
+    <div class="chip-row"><button class="btn secondary small">Raise hand</button><button class="btn secondary small">Chat</button><button class="btn secondary small">Mute</button></div>
+  </div>
+  <div class="notice">Platform-level Focus Mode can restrict in-app navigation like this. It cannot fully block switching to other apps on a phone or another browser tab — that needs the device's own parental-control/kiosk settings, set up separately by a parent.</div>
+  <div style="margin-top:14px;text-align:right"><button class="btn" onclick="endLive()">Leave class</button></div>`;
+}
+function startPresencePing(){
+  const iv = setInterval(()=>{
+    if(!STATE.liveSession){ clearInterval(iv); return; }
+    STATE.liveSession.pings++;
+    const el = document.getElementById('pingCount');
+    if(el) el.textContent = 'Presence checks passed: '+STATE.liveSession.pings;
+    if(STATE.liveSession.pings>=4){ clearInterval(iv); endLive(true); }
+  },1500);
+}
+function endLive(auto){
+  if(STATE.liveSession){
+    const sub = STATE.liveSession.subject;
+    STATE.student.attendance[sub] = Math.min(100, (STATE.student.attendance[sub]||90)+1);
+    STATE.student.notifications.unshift(`${sub} class ended — recording will appear in Recorded Classes.`);
+    STATE.liveSession = null;
+    saveState();
+  }
+  closeModal(); render();
+  toast(auto ? 'Class ended — attendance marked, recording saved.' : 'You left the class.');
+}
+
+/* ---------- PARENT ---------- */
+function parentView(){
+  const p = STATE.parent, s = STATE.student;
+  return `
+  <h1>${p.child}'s learning today</h1>
+  <div class="grid">
+    <div class="card"><h3>Attendance by subject</h3>
+      ${Object.entries(s.attendance).map(([sub,pct])=>`<div class="row"><span>${sub}</span><span>${pct}%</span></div>`).join('')}
+    </div>
+    <div class="card"><h3>Homework status</h3>
+      ${s.homework.map(h=>`<div class="row"><span>${h.title}</span><span class="pill ${h.status==='Submitted'?'ok':'warn'}">${h.status}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card"><h3>Focus Mode & permitted hours</h3>
+    <div class="row"><span>Focus Mode during live classes</span>
+      <span class="pill ${p.focusEnabled?'ok':''}">${p.focusEnabled?'Enabled':'Disabled'}</span></div>
+    <div class="row"><span>Permitted learning hours</span><span>${p.hours}</span></div>
+    <button class="btn secondary small" style="margin-top:10px" onclick="askPin()">Change settings (PIN required)</button>
+    <div class="notice">Changing these settings needs the parent PIN — a lightweight lock so a child can't quietly disable monitoring.</div>
+  </div>
+  <div class="card"><h3>Alerts</h3>${p.alerts.map(a=>`<div class="row">${a}</div>`).join('')}</div>`;
+}
+function askPin(){
+  openModal(`<h3>Enter parent PIN</h3>
+    <input type="password" id="pinInput" placeholder="4-digit PIN" maxlength="4">
+    <div style="margin-top:12px;text-align:right">
+      <button class="btn secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn" onclick="checkPin()">Confirm</button>
+    </div>`);
+}
+function checkPin(){
+  const val = document.getElementById('pinInput').value;
+  if(val === STATE.parent.pin){
+    closeModal();
+    openModal(`<h3>Focus Mode settings</h3>
+      <label>Permitted hours</label>
+      <input type="text" id="hoursInput" value="${STATE.parent.hours}">
+      <div class="row" style="margin-top:10px"><span>Focus Mode enabled</span>
+        <input type="checkbox" id="focusChk" ${STATE.parent.focusEnabled?'checked':''}></div>
+      <div style="margin-top:14px;text-align:right"><button class="btn" onclick="saveFocus()">Save</button></div>`);
+  } else { toast('Incorrect PIN.'); }
+}
+function saveFocus(){
+  STATE.parent.hours = document.getElementById('hoursInput').value;
+  STATE.parent.focusEnabled = document.getElementById('focusChk').checked;
+  saveState(); closeModal(); render(); toast('Focus Mode settings updated.');
+}
+
+/* ---------- TEACHER ---------- */
+function teacherView(){
+  const t = STATE.teacher;
+  return `
+  <h1>${t.name}'s classes</h1>
+  <div class="grid">
+    <div class="card"><h3>Today</h3>
+      ${t.classes.map(([cls,sub,time])=>`<div class="row"><span>${time} — ${cls} ${sub}</span><button class="btn small" onclick="startTeach('${cls}','${sub}')">Start class</button></div>`).join('')}
+    </div>
+    <div class="card"><h3>Attendance today</h3>
+      ${Object.entries(t.attendanceToday).map(([name,st])=>`<div class="row"><span>${name}</span><span class="pill ${st==='Present'?'ok':'warn'}">${st}</span></div>`).join('')}
+    </div>
+  </div>
+  <div class="card"><h3>Pending grading</h3>
+    ${t.grading.map(g=>`<div class="row"><span>${g.student} — ${g.work} <small style="color:var(--muted)">(${g.cls})</small></span>
+      ${g.grade!==null ? `<span class="pill ok">${g.grade}%</span>` :
+        `<input type="number" min="0" max="100" style="width:70px;display:inline-block" id="grade${g.id}"> <button class="btn small" onclick="giveGrade(${g.id})">Grade</button>`}</div>`).join('')}
+  </div>`;
+}
+function startTeach(cls,sub){
+  STATE.liveSession = {subject: sub+' — '+cls, joinedAt: Date.now(), pings:0};
+  saveState(); openModal(liveModalHTML()); startPresencePing();
+}
+function giveGrade(id){
+  const val = document.getElementById('grade'+id).value;
+  if(val===''){ toast('Enter a score first.'); return; }
+  const g = STATE.teacher.grading.find(x=>x.id===id); g.grade = val;
+  saveState(); render(); toast('Grade saved — visible to student and parent.');
+}
+
+/* ---------- SCHOOL ADMIN ---------- */
+function schoolView(){
+  const sc = STATE.school;
+  return `
+  <h1>${sc.name}</h1>
+  <div class="grid">
+    <div class="card"><h3>Overview</h3>
+      <div class="row"><span>Students</span><span>${sc.students}</span></div>
+      <div class="row"><span>Teachers</span><span>${sc.teachers}</span></div>
+      <div class="row"><span>Today's attendance</span><span>${sc.todayAttendance}%</span></div>
+      <div class="row"><span>Subscription</span><span class="pill ok">${sc.subscription}</span></div>
+    </div>
+    <div class="card"><h3>Bulk import</h3>
+      <p style="color:var(--muted);font-size:.85rem">Add students or teachers via a CSV file (simulated in this demo).</p>
+      <button class="btn secondary small" onclick="fakeImport('students')">Import students CSV</button>
+      <button class="btn secondary small" onclick="fakeImport('teachers')">Import teachers CSV</button>
+    </div>
+  </div>
+  <div class="card"><h3>Announcements</h3>
+    ${sc.announcements.map(a=>`<div class="row">${a}</div>`).join('')}
+    <textarea id="annText" placeholder="Write a school-wide announcement..."></textarea>
+    <div style="text-align:right;margin-top:8px"><button class="btn small" onclick="postAnn()">Post announcement</button></div>
+  </div>`;
+}
+function fakeImport(kind){
+  const n = Math.floor(Math.random()*20)+5;
+  if(kind==='students') STATE.school.students += n; else STATE.school.teachers += n;
+  saveState(); render(); toast(`${n} ${kind} imported successfully.`);
+}
+function postAnn(){
+  const val = document.getElementById('annText').value.trim();
+  if(!val){ toast('Write something first.'); return; }
+  STATE.school.announcements.unshift(val);
+  saveState(); render(); toast('Announcement posted to the school.');
+}
+
+loadState(); render();
+</script>
+</body>
+</html>
